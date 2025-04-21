@@ -26,15 +26,15 @@ important_features = [
     "habitat"
 ]
 
-# Custom CSS
+# Custom CSS for styling
 st.markdown("""
     <style>
-        .stTextInput>div>label {
+        .stSelectbox label {
             font-weight: 600;
             color: #333;
         }
         .stButton>button {
-            background-color: #0984e3;
+            background-color: #0abde3;
             color: white;
             border-radius: 8px;
             font-weight: bold;
@@ -51,25 +51,24 @@ st.markdown("""
 
 # Title
 st.title("🍄 Mushroom Edibility Classifier")
-st.markdown("### ✍️ Type in Mushroom Properties to Predict Edibility")
+st.markdown("### 🚀 Find out if your mushroom is **safe or poisonous** using AI")
 
-st.write("Please enter the characteristics of the mushroom below:")
+st.write("Enter the following key characteristics of the mushroom:")
 
-# Input form
+# Form for user input
 user_input = []
 with st.form("input_form"):
     for feature in important_features:
-        user_value = st.text_input(f"🔹 {feature.replace('_', ' ').capitalize()}").strip().lower()
-        if user_value not in label_encoders[feature].classes_:
-            st.warning(f"⚠️ '{user_value}' is not a recognized value for {feature}. Options: {', '.join(label_encoders[feature].classes_)}", icon="⚠️")
-        encoded_val = label_encoders[feature].transform([user_value])[0] if user_value in label_encoders[feature].classes_ else 0
+        options = label_encoders[feature].classes_.tolist()
+        selection = st.selectbox(f"🔹 {feature.replace('_', ' ').capitalize()}:", options)
+        encoded_val = label_encoders[feature].transform([selection])[0]
         user_input.append(encoded_val)
 
     submitted = st.form_submit_button("🔮 Predict Edibility")
 
 # Prediction
 if submitted:
-    input_array = np.zeros((1, len(label_encoders) - 1))
+    input_array = np.zeros((1, len(label_encoders) - 1))  # Total features minus target
     for idx, feature in enumerate(important_features):
         feature_index = list(label_encoders.keys()).index(feature) - 1
         input_array[0][feature_index] = user_input[idx]
