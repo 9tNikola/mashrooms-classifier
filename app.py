@@ -3,45 +3,43 @@ import numpy as np
 from tensorflow.keras.models import load_model
 import pickle
 
-# Page config
+# Page setup
 st.set_page_config(
     page_title="🍄 Mushroom Edibility Classifier",
     page_icon="🍄",
     layout="centered"
 )
 
-# Load model and encoders
-model = load_model("mushroom_ann_model.keras")
-with open("label_encoders.pkl", "rb") as f:
-    label_encoders = pickle.load(f)
-
-# Only use important fields
-important_features = [
-    "cap_shape",
-    "cap_color",
-    "gill_size",
-    "gill_color",
-    "ring_type",
-    "spore_print_color",
-    "habitat"
-]
-
-# Custom CSS for styling
+# 🔧 Custom CSS
 st.markdown("""
     <style>
+        body {
+            background-color: #f4f4f4;
+        }
+        .main {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h4 {
+            color: #2d3436;
+            font-family: 'Segoe UI', sans-serif;
+        }
         .stSelectbox label {
             font-weight: 600;
             color: #333;
         }
         .stButton>button {
-            background-color: #0abde3;
+            background-color: #0984e3;
             color: white;
             border-radius: 8px;
+            padding: 0.6rem 1.2rem;
             font-weight: bold;
         }
         .prediction-box {
-            margin-top: 1rem;
             padding: 1rem;
+            margin-top: 1rem;
             border-radius: 10px;
             font-size: 1.3rem;
             font-weight: 600;
@@ -49,40 +47,47 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Title
-st.title("🍄 Mushroom Edibility Classifier")
-st.markdown("### 🚀 Find out if your mushroom is **safe or poisonous** using AI")
+# ⬆️ Container
+with st.container():
+    st.title("🍄 Mushroom Edibility Classifier")
+    st.markdown("##### 🚀 Predict if a mushroom is **Edible** or **Poisonous** based on its physical features.")
+    st.write("This AI-powered model uses a trained Artificial Neural Network (ANN) to determine edibility.")
 
-st.write("Enter the following key characteristics of the mushroom:")
+# 📦 Load model and encoders
+model = load_model("mushroom_ann_model.keras")
 
-# Form for user input
+with open("label_encoders.pkl", "rb") as f:
+    label_encoders = pickle.load(f)
+
+# 🔠 Get feature names (excluding target)
+feature_names = list(label_encoders.keys())[1:]
+
+# ✍️ Input section
+st.subheader("🔍 Input Mushroom Characteristics")
+
 user_input = []
 with st.form("input_form"):
-    for feature in important_features:
+    for feature in feature_names:
         options = label_encoders[feature].classes_.tolist()
-        selection = st.selectbox(f"🔹 {feature.replace('_', ' ').capitalize()}:", options)
+        selection = st.selectbox(f"🔸 {feature.replace('_', ' ').capitalize()}:", options)
         encoded_val = label_encoders[feature].transform([selection])[0]
         user_input.append(encoded_val)
 
     submitted = st.form_submit_button("🔮 Predict Edibility")
 
-# Prediction
+# 🧠 Predict
 if submitted:
-    input_array = np.zeros((1, len(label_encoders) - 1))  # Total features minus target
-    for idx, feature in enumerate(important_features):
-        feature_index = list(label_encoders.keys()).index(feature) - 1
-        input_array[0][feature_index] = user_input[idx]
-
+    input_array = np.array(user_input).reshape(1, -1)
     prediction = model.predict(input_array)[0][0]
 
     st.subheader("🧾 Prediction Result")
     if prediction < 0.5:
-        st.success("✅ This mushroom is **EDIBLE**")
-        st.markdown(f"<div class='prediction-box' style='background-color: #dff9fb; color: #079992;'>Confidence: {(1 - prediction) * 100:.2f}%</div>", unsafe_allow_html=True)
+        st.success("✅ The mushroom is **EDIBLE**")
+        st.markdown(f"<div class='prediction-box' style='background-color: #dff9fb; color: #079992;'>🌿 Safe to consume — Confidence: {(1 - prediction) * 100:.2f}%</div>", unsafe_allow_html=True)
     else:
-        st.error("☠️ This mushroom is **POISONOUS**")
-        st.markdown(f"<div class='prediction-box' style='background-color: #ffeaa7; color: #d63031;'>Confidence: {prediction * 100:.2f}%</div>", unsafe_allow_html=True)
+        st.error("❌ The mushroom is **POISONOUS**")
+        st.markdown(f"<div class='prediction-box' style='background-color: #ffeaa7; color: #d63031;'>☠️ Not safe — Confidence: {prediction * 100:.2f}%</div>", unsafe_allow_html=True)
 
-# Footer
+# 🧾 Footer
 st.markdown("---")
-st.markdown("<center><small>App by Zia | Powered by Streamlit & TensorFlow</small></center>", unsafe_allow_html=True)
+st.markdown("<center><small>© 2025 Mushroom Classifier App | Developed by <b>Zia</b> with ❤️</small></center>", unsafe_allow_html=True)
