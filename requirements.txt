@@ -1,5 +1,10 @@
 streamlit
 numpy
+pandas
+matplotlib
+seaborn
 tensorflow
+keras
 pickle-mixin
-scikit-learn
+pillow
+io
