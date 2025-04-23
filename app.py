@@ -1466,6 +1466,7 @@ def history_mode():
         
         with viz_col1:
             # Distribution pie chart
+                        # Distribution pie chart
             fig = px.pie(
                 filtered_df['result'].value_counts().reset_index(),
                 values='count',
@@ -1475,7 +1476,8 @@ def history_mode():
                 color_discrete_map={'Edible': '#15803d', 'Poisonous': '#b91c1c'},
                 hole=0.4
             )
-fig.update_layout(
+            
+            fig.update_layout(
                 height=350,
                 margin=dict(l=20, r=20, t=50, b=20),
                 paper_bgcolor='rgba(0,0,0,0)',
@@ -1483,39 +1485,6 @@ fig.update_layout(
             )
             
             st.plotly_chart(fig, use_container_width=True)
-        
-        with viz_col2:
-            # Create dummy time series data for visualization
-            dates = pd.date_range(end=datetime.now(), periods=min(len(filtered_df), 10)).tolist()
-            dates.sort()
-            
-            trend_data = pd.DataFrame({
-                'Date': dates,
-                'Edible': np.random.randint(0, 5, size=len(dates)),
-                'Poisonous': np.random.randint(0, 5, size=len(dates))
-            })
-            
-            # Time series plot
-            fig2 = px.line(
-                trend_data, 
-                x='Date', 
-                y=['Edible', 'Poisonous'],
-                title='Analysis Frequency Over Time',
-                color_discrete_map={'Edible': '#15803d', 'Poisonous': '#b91c1c'},
-                markers=True
-            )
-            
-            fig2.update_layout(
-                height=350,
-                margin=dict(l=20, r=20, t=50, b=20),
-                paper_bgcolor='rgba(0,0,0,0)',
-                plot_bgcolor='rgba(0,0,0,0)',
-                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5),
-                xaxis_title="Date",
-                yaxis_title="Number of Analyses"
-            )
-            
-            st.plotly_chart(fig2, use_container_width=True)
         
         st.markdown("</div>", unsafe_allow_html=True)
 
