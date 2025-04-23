@@ -782,6 +782,3 @@ def show_classifier():
                     if feature in feature_names:
                         options = label_encoders[feature].classes_.tolist()
                         tooltip = get_feature_tooltip(feature)
-                        
-                        st.markdown(f"""
-                        <div class="tooltip
