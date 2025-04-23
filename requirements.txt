@@ -4,4 +4,6 @@ pandas
 matplotlib
 seaborn
 tensorflow
-pillow
+scikit-learn
+plotly
+datetime
