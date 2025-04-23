@@ -12,19 +12,16 @@ st.set_page_config(
 st.markdown("""
     <style>
         body {
-            background-color: 
-#f4f4f4;
+            background-color: #f4f4f4;
         }
         .main {
-            background-color: 
-#ffffff;
+            background-color: #ffffff;
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
         }
         h1, h2, h4 {
-            color: 
-#2d3436;
+            color: #2d3436;
             font-family: 'Segoe UI', sans-serif;
         }
         .stSelectbox label {
@@ -32,8 +29,7 @@ st.markdown("""
             color: #333;
         }
         .stButton>button {
-            background-color: 
-#0984e3;
+            background-color: #0984e3;
             color: white;
             border-radius: 8px;
             padding: 0.6rem 1.2rem;
@@ -64,7 +60,7 @@ st.subheader("🔍 Input Mushroom Characteristics")
 user_input = []
 with st.form("input_form"):
     for feature in feature_names:
-        options = labelencoders[feature].classes.tolist()
+        options = label_encoders[feature].classes_.tolist()
         selection = st.selectbox(f"🔸 {feature.replace('_', ' ').capitalize()}:", options)
         encoded_val = label_encoders[feature].transform([selection])[0]
         user_input.append(encoded_val)
@@ -76,14 +72,10 @@ if submitted:
     st.subheader("🧾 Prediction Result")
     if prediction < 0.5:
         st.success("✅ The mushroom is EDIBLE")
-        st.markdown(f"<div class='prediction-box' style='background-color: 
-#dff9fb; color: 
-#079992;'>🌿 Safe to consume — Confidence: {(1 - prediction) * 100:.2f}%</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='prediction-box' style='background-color: #dff9fb; color: #079992;'>🌿 Safe to consume — Confidence: {(1 - prediction) * 100:.2f}%</div>", unsafe_allow_html=True)
     else:
         st.error("❌ The mushroom is POISONOUS")
-        st.markdown(f"<div class='prediction-box' style='background-color: 
-#ffeaa7; color: 
-#d63031;'>☠️ Not safe — Confidence: {prediction * 100:.2f}%</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='prediction-box' style='background-color: #ffeaa7; color: #d63031;'>☠️ Not safe — Confidence: {prediction * 100:.2f}%</div>", unsafe_allow_html=True)
 # 🧾 Footer
 st.markdown("---")
 st.markdown("<center><small>© 2025 Mushroom Classifier App | Developed by <b>Zia</b> with ❤️</small></center>", unsafe_allow_html=True)
